@@ -13,8 +13,8 @@ La aplicación de React utiliza Apollo Client para conectarse al servidor GraphQ
 
 ## Instalación
 
-1. Clonar el repositorio: `git clone https://github.com/tu-usuario/catologo-productos-react.git`.
-2. Navegar a la carpeta del proyecto: `cd catalogo-productos-react`.
+1. Clonar el repositorio: `git clone https://github.com/raulgonzalezdev/reto-uey.git`.
+2. Navegar a la carpeta del proyecto: `cd reto-uey`.
 3. Instalar las dependencias: `npm install`.
 4. Iniciar el servidor GraphQL: `npm run start:server`. El servidor estará disponible en `http://localhost:4000/graphql`.
 5. Iniciar la aplicación de React: `npm start`. La aplicación estará disponible en `http://localhost:3000`.
