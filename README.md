@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# Catálogo de productos
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este proyecto es un ejemplo de cómo crear un catálogo de productos en React utilizando GraphQL y Apollo Client. En este proyecto, los usuarios pueden ver una lista de productos y seleccionar un producto para ver sus detalles.
 
-## Available Scripts
+El servidor GraphQL proporciona datos de productos que se muestran en la aplicación cliente de React. Los datos del producto se organizan en tres tipos: simple, rentable y espacio. Cada tipo de producto tiene diferentes campos de datos que se muestran en la página de detalles del producto.
 
-In the project directory, you can run:
+La aplicación de React utiliza Apollo Client para conectarse al servidor GraphQL y recuperar los datos de los productos. Se utiliza Google Maps para mostrar la ubicación del producto en el caso de los productos de espacio.
 
-### `npm start`
+## Requerimientos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js instalado en el sistema.
+- Conexión a Internet.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Instalación
 
-### `npm test`
+1. Clonar el repositorio: `git clone https://github.com/tu-usuario/catologo-productos-react.git`.
+2. Navegar a la carpeta del proyecto: `cd catalogo-productos-react`.
+3. Instalar las dependencias: `npm install`.
+4. Iniciar el servidor GraphQL: `npm run start:server`. El servidor estará disponible en `http://localhost:4000/graphql`.
+5. Iniciar la aplicación de React: `npm start`. La aplicación estará disponible en `http://localhost:3000`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Uso
 
-### `npm run build`
+La aplicación consta de dos componentes principales:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `ProductList`: muestra una lista de productos. Los usuarios pueden hacer clic en un producto para ver sus detalles.
+- `ProductDetails`: muestra los detalles de un producto seleccionado.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Cuando la aplicación se inicia, se muestra la lista de productos. Los usuarios pueden hacer clic en un producto para ver sus detalles en la página `ProductDetails`. Los detalles del producto se organizan en diferentes secciones dependiendo del tipo de producto. Si el producto es un espacio, se muestra un mapa de Google Maps con la ubicación del espacio.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Tecnologías utilizadas
 
-### `npm run eject`
+- React: biblioteca de JavaScript para construir interfaces de usuario.
+- GraphQL: lenguaje de consulta y manipulación de datos para APIs.
+- Apollo Client: biblioteca de gestión de estado y conexión a servidores GraphQL.
+- Google Maps: plataforma de mapas y geolocalización.
+- Node.js: entorno de JavaScript para el servidor.
+- Express: framework de Node.js para crear aplicaciones web y APIs.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Autor
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Nombre: RAUL GONZALEZ
+- Email: GQ.RAUL@GMAIL.COM
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Licencia
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
