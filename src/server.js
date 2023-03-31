@@ -59,7 +59,7 @@ const products = [
     id: "1",
     nombre: "Coca-Cola",
     vendedor: "Coca-Cola Company",
-    imagen: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fes.m.wikipedia.org%2Fwiki%2FArchivo%3ALata_Coca_Cola.JPG&psig=AOvVaw0UcfDj3WKuZe1q_Tix7JZr&ust=1680305039505000&source=images&cd=vfe&ved=0CA8QjRxqFwoTCIi8y5nmhP4CFQAAAAAdAAAAABAE",
+    imagen: "https://www.giorgiogastro.com.br/ipatinga/wp-content/uploads/2018/09/coca-cola.jpg",
     precio: 15,
     tipo: "simple",
     inventario: 100,
