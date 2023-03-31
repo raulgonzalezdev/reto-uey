@@ -91,7 +91,7 @@ const ProductDetails = ({ productId }) => {
           <h3>Ubicación</h3>
           <div style={{ height: "300px", width: "100%" }}>
             <GoogleMapReact
-              bootstrapURLKeys={{ key: "AIzaSyAcT8PWlVZa_yL2wrvpHNpnrJ0YFOQSwyI" }}
+              bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY  }}
               defaultCenter={product.ubicacion}
               defaultZoom={15}
             >
