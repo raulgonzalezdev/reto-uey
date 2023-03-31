@@ -7,7 +7,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./App.css";
 import { format } from "date-fns";
 import { es } from 'date-fns/locale';
-
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
@@ -171,11 +171,33 @@ const CarouselProducts = ({ products, onProductSelected }) => {
     onProductSelected(products[index].id);
   };
 
+  const renderArrowPrev = (onClickHandler, hasPrev, label) => {
+    return (
+     
+        <FaArrowLeft Click={onClickHandler}
+        className="control-arrow control-prev" />
+ 
+    );
+  };
+
+  const renderArrowNext = (onClickHandler, hasNext, label) => {
+    return (
+
+        <FaArrowRight onClick={onClickHandler}
+         className="control-arrow control-next"/>
+   
+    );
+  };
+
   return (
+  
     <Carousel
       showThumbs={false}
       showStatus={false}
       onChange={handleCarouselChange}
+      showArrows={true}
+      renderArrowPrev={renderArrowPrev}
+      renderArrowNext={renderArrowNext}
     >
       {products.map((product) => (
         <ProductCard
@@ -185,6 +207,7 @@ const CarouselProducts = ({ products, onProductSelected }) => {
         />
       ))}
     </Carousel>
+
   );
 };
 
