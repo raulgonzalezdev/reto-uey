@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { gql, useQuery } from "@apollo/client";
 import GoogleMapReact from "google-map-react";
@@ -122,10 +121,13 @@ const ProductDetails = ({ productId }) => {
                 </div>
               </GoogleMapReact>
             </div>
+        
             <h3>Disponibilidad</h3>
-            <ul>
+            <ul className="disponibilidad-list">
               {product.disponibilidad.map((fecha) => (
-                <li key={fecha}>{fecha}</li>
+                <li key={fecha} className="disponibilidad-list-item">
+                  {formatDate(fecha)}
+                </li>
               ))}
             </ul>
           </>
@@ -192,7 +194,7 @@ const App = () => {
   const handleProductSelection = (productId) => {
     setSelectedProductId(productId);
   };
-
+  console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
   return (
     <ApolloProvider client={client}>
       <ProductList onProductSelected={handleProductSelection} />
@@ -201,6 +203,6 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+
 
 export default App;
