@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { ALL_PRODUCTS_QUERY } from "../graphql/queries";
 import CarouselProducts from "./CarouselProducts";
 
+
 const ProductList = ({ onProductSelected }) => {
   const { loading, error, data } = useQuery(ALL_PRODUCTS_QUERY);
 

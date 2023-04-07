@@ -3,8 +3,45 @@ import { useQuery } from "@apollo/client";
 import { PRODUCT_QUERY } from "../graphql/queries";
 import formatDate from "../utils/formatDate";
 import GoogleMapReact from "google-map-react";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardMedia,
+  CardActions,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  makeStyles,
+} from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 600,
+    margin: "auto",
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
+  },
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+  },
+  availabilityList: {
+    marginTop: theme.spacing(2),
+  },
+  mapContainer: {
+    height: 200,
+    width: "100%",
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+}));
 
 const ProductDetails = ({ productId }) => {
+  const classes = useStyles();
+
   const { loading, error, data } = useQuery(PRODUCT_QUERY, {
     variables: { id: productId },
   });
@@ -15,45 +52,42 @@ const ProductDetails = ({ productId }) => {
   const product = data.product;
 
   return (
-    <div className="card">
-      <div className="card-header">
-        <h1>{product.nombre}</h1>
-      </div>
-      <div className="card-body">
-        <p>Vendedor: {product.vendedor}</p>
-        <img
-          className="product-image"
-          src={product.imagen}
-          alt={product.nombre}
-        />
-        <p>Precio: ${product.precio}</p>
-
+    <Card className={classes.root}>
+      <CardHeader
+        title={product.nombre}
+        subheader={`Vendedor: ${product.vendedor}`}
+        className={classes.header}
+      />
+      <CardMedia className={classes.media} image={product.imagen} title={product.nombre} />
+      <CardContent>
+        <Typography variant="h6">Precio: ${product.precio}</Typography>
+  
         {product.tipo === "simple" && (
           <>
-            <h3>Inventario</h3>
-            <p>{product.inventario} unidades disponibles</p>
+            <Typography variant="h6">Inventario</Typography>
+            <Typography>{product.inventario} unidades disponibles</Typography>
           </>
         )}
-
+  
         {product.tipo === "rentable" && (
           <>
-            <h3>Tipo de renta</h3>
-            <p>{product.tipoRenta}</p>
-            <h3>Disponibilidad</h3>
-            <ul className="disponibilidad-list">
+            <Typography variant="h6">Tipo de renta</Typography>
+            <Typography>{product.tipoRenta}</Typography>
+            <Typography variant="h6">Disponibilidad</Typography>
+            <List className={classes.availabilityList}>
               {product.disponibilidad.map((fecha) => (
-                <li key={fecha} className="disponibilidad-list-item">
-                  {formatDate(fecha)}
-                </li>
+                <ListItem key={fecha}>
+                  <ListItemText primary={formatDate(fecha)} />
+                </ListItem>
               ))}
-            </ul>
+            </List>
           </>
         )}
-
+  
         {product.tipo === "espacio" && (
           <>
-            <h3>Ubicación</h3>
-            <div className="map-container">
+            <Typography variant="h6">Ubicación</Typography>
+            <div className={classes.mapContainer}>
               <GoogleMapReact
                 bootstrapURLKeys={{
                   key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -69,20 +103,27 @@ const ProductDetails = ({ productId }) => {
                 </div>
               </GoogleMapReact>
             </div>
-        
-            <h3>Disponibilidad</h3>
-            <ul className="disponibilidad-list">
+  
+            <Typography variant="h6">Disponibilidad</Typography>
+            <List className={classes.availabilityList}>
               {product.disponibilidad.map((fecha) => (
-                <li key={fecha} className="disponibilidad-list-item">
-                  {formatDate(fecha)}
-                </li>
+                <ListItem key={fecha}>
+                  <ListItemText primary={formatDate(fecha)} />
+                </ListItem>
               ))}
-            </ul>
+            </List>
           </>
         )}
-      </div>
-    </div>
+      </CardContent>
+  
+      <CardActions>
+        <Button variant="contained" color="primary" className={classes.button}>
+          Añadir al carrito
+        </Button>
+      </CardActions>
+    </Card>
   );
+  
 };
 
 export default ProductDetails;

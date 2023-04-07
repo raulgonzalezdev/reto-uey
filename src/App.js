@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ApolloProvider } from "@apollo/client";
 import "./App.css";
+import Header from "./components/Header/Header";
 import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
 import { client } from "./graphql/client";
@@ -14,6 +15,7 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
+     <Header />
       <ProductList onProductSelected={handleProductSelection} />
       {selectedProductId && <ProductDetails productId={selectedProductId} />}
     </ApolloProvider>
