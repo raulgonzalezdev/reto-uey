@@ -65,6 +65,15 @@ const products = [
     inventario: 100,
   },
   {
+    id: "4",
+    nombre: "Pepsi-Cola",
+    vendedor: "Pepsi-Cola Company",
+    imagen: "https://www.giorgiogastro.com.br/ipatinga/wp-content/uploads/2018/09/coca-cola.jpg",
+    precio: 18,
+    tipo: "simple",
+    inventario: 300,
+  },
+  {
     id: "2",
     nombre: "Mesa redonda",
     vendedor: "Uey Rentals",
