@@ -4,11 +4,11 @@ const ProductCard = ({ product, onClick }) => {
   return (
     <div className="product-card" onClick={onClick}>
       <img
-        src={product.imagen}
-        alt={product.nombre}
+        src={product.image}
+        alt={product.name}
         style={{ width: "20%", height: "auto" }}
       />
-      <h3>{product.nombre}</h3>
+      <h3>{product.name}</h3>
     </div>
   );
 };

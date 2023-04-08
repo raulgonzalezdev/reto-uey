@@ -1,72 +1,95 @@
-import React from "react";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import SimpleProduct from "../../src/images/category-cerveza.svg";
-import SpaceProduct from "../../src/images/category-familiares.svg";
-import RentableProduct from "../../src/images/category-mobiliario.svg";
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Card, Typography, IconButton } from "@material-ui/core";
+import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 
-import { Card } from "@material-ui/core";
+const useStyles = makeStyles((theme) => ({
+  carouselContainer: {
+    maxWidth: "50%",
+    margin: "0 auto",
+  },
+  cardStyles: {
+    width: "25%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "1rem",
+    boxSizing: "border-box",
+    cursor: "pointer",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    margin: "10px",
+  },
+  imgStyle: {
+    width: "60%",
+    maxWidth: "60%",
+    height: "60%",
+    cursor: "pointer",
+    maxHeight: "150px",
+    objectFit: "contain",
+  },
+}));
 
-const cardStyle = {
-  borderRadius: "15px",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-  margin: "10px",
-  padding: "10px",
-};
-
-const ProductTypeCarousel = ({ productTypes, onTypeSelected }) => {
-  const handleCarouselChange = (index) => {
-    onTypeSelected(productTypes[index]);
-  };
-
-  const images = {
-    SimpleProduct,
-    SpaceProduct,
-    RentableProduct,
-  };
-
-  const renderArrowPrev = (onClickHandler, hasPrev, label) => {
+const ProductTypeCarousel = ({ productTypes, onProductTypeSelected }) => {
+    const classes = useStyles();
+    const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setSelectedProductIndex((selectedProductIndex) =>
+          selectedProductIndex === productTypes.length - 1 ? 0 : selectedProductIndex + 1
+        );
+      }, 4000);
+      return () => clearInterval(interval);
+    }, [productTypes]);
+  
+    const handleCardClick = (type, index) => {
+      setSelectedProductIndex(index);
+      onProductTypeSelected(type);
+    };
+  
+    const handlePrevClick = () => {
+      setSelectedProductIndex((selectedProductIndex) =>
+        selectedProductIndex === 0 ? productTypes.length - 1 : selectedProductIndex - 1
+      );
+    };
+  
+    const handleNextClick = () => {
+      setSelectedProductIndex((selectedProductIndex) =>
+        selectedProductIndex === productTypes.length - 1 ? 0 : selectedProductIndex + 1
+      );
+    };
+  
+    const productTypeCards = productTypes.map((type, index) => (
+      <Card
+        key={index}
+        className={classes.cardStyles}
+        onClick={() => handleCardClick(type, index)}
+      >
+        <img src={type.image} alt={type.name} className={classes.imgStyle} />
+        <Typography variant="h7" align="center" style={{ fontWeight: "bold" }}>
+          {type.name}
+        </Typography>
+      </Card>
+    ));
+  
+    // En lugar de cortar la lista de productos, repítala con un índice de desplazamiento
+    const offset = Math.max(0, selectedProductIndex - 3);
+    const displayedCards = productTypeCards.slice(offset).concat(productTypeCards.slice(0, offset));
+  
     return (
-      <FaArrowLeft
-        onClick={onClickHandler}
-        className="control-arrow control-prev"
-      />
-    );
-  };
-
-  const renderArrowNext = (onClickHandler, hasNext, label) => {
-    return (
-      <FaArrowRight
-        onClick={onClickHandler}
-        className="control-arrow control-next"
-      />
-    );
-  };
-
-  return (
-    <Carousel
-      showThumbs={false}
-      showStatus={false}
-      onChange={handleCarouselChange}
-      showArrows={true}
-      renderArrowPrev={renderArrowPrev}
-      renderArrowNext={renderArrowNext}
-    >
-      {productTypes.map((type, index) => (
-        <div key={index}>
-          <Card style={cardStyle}>
-            <img
-              src={images[type]}
-              alt={type}
-              onClick={() => onTypeSelected(type)}
-              style={{ width: "100%", height: "auto", cursor: "pointer" }}
-            />
-          </Card>
+      <div className={classes.carouselContainer}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <IconButton onClick={handlePrevClick}>
+            <ChevronLeft />
+          </IconButton>
+          {displayedCards.slice(0, 4)}
+          <IconButton onClick={handleNextClick}>
+            <ChevronRight />
+          </IconButton>
         </div>
-      ))}
-    </Carousel>
-  );
-};
+      </div>
+    );
+  };
+  
 
 export default ProductTypeCarousel;

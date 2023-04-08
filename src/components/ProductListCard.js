@@ -1,4 +1,5 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
 import {
   Grid,
   Card,
@@ -7,17 +8,34 @@ import {
   CardActions,
   Button,
   CardMedia,
-} from "@mui/material";
+} from "@material-ui/core";
 
-const ProductList = ({ products, onAddToCart, onProductClick }) => {
+import { CATEGORY_QUERY } from "../graphql/queries";
+
+const ProductList = ({ productTypeId, onProductClick, onAddToCartClick }) => {
+
+   
+    const { loading, error, data } = useQuery(CATEGORY_QUERY, {
+        variables: { id: productTypeId },
+      });
+
+      if (loading) return <p>Loading...</p>;
+      if (error) return <p>Error :(</p>;
+    
+      const filteredProducts = data.category.products;
+      
+
   return (
+    <div style={{ marginLeft: "20px", marginRight: "20px" }}>
     <Grid container spacing={4}>
-      {products.map((product) => (
-        <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
+      {filteredProducts.map((product) => (
+        <Grid key={product.id} item xs={12} sm={6} md={4} lg={3} sx={{ marginLeft: "100px" }}>
           <Card
             sx={{
               boxShadow: 3,
               borderRadius: 2,
+              marginLeft: "100px"
+              
             }}
           >
             <CardMedia
@@ -35,9 +53,6 @@ const ProductList = ({ products, onAddToCart, onProductClick }) => {
               <Typography variant="h5" component="div">
                 {product.name}
               </Typography>
-              <Typography variant="body1" color="text.secondary">
-                {product.description}
-              </Typography>
               <Typography variant="body2" color="text.primary">
                 Precio: ${product.price}
               </Typography>
@@ -46,15 +61,25 @@ const ProductList = ({ products, onAddToCart, onProductClick }) => {
               <Button
                 size="small"
                 color="primary"
-                onClick={() => onAddToCart(product.id)}
+                onClick={() => onProductClick(product.id)}
               >
-                Agregar al carrito
+                Ver detalles
               </Button>
-            </CardActions>
+           
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => onAddToCartClick(product)}
+                 
+                >
+                  + carrito
+                </Button>
+              </CardActions>
           </Card>
         </Grid>
       ))}
     </Grid>
+    </div>
   );
 };
 
