@@ -8,6 +8,8 @@ type Query {
   product(id: ID!): Product
   categories: [Category!]!
   category(id: ID!): Category
+  featuredProducts: [Product!]!
+  newArrivalsProducts: [Product!]!
 }
 
 type Category {
@@ -23,11 +25,13 @@ type Product {
   vendor: String!
   image: String!
   price: Float!
-  category: Category!
+  category: Category
   inventory: Int
   rentalType: String
   availability: [String!]
   location: Location
+  featured: Boolean!
+  newarrivals: Boolean!
 }
 
 type Location {
@@ -44,6 +48,8 @@ const resolvers = {
     product: (_, { id }) => products.find((product) => product.id === id),
     categories: () => categories,
     category: (_, { id }) => categories.find((category) => category.id === id),
+    featuredProducts: () => products.filter((product) => product.featured),
+    newArrivalsProducts: () => products.filter((product) => product.newarrivals),
   },
   Product: {
     category: (product) =>

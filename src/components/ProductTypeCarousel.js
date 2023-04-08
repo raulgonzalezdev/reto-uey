@@ -38,7 +38,7 @@ const ProductTypeCarousel = ({ productTypes, onProductTypeSelected }) => {
         setSelectedProductIndex((selectedProductIndex) =>
           selectedProductIndex === productTypes.length - 1 ? 0 : selectedProductIndex + 1
         );
-      }, 4000);
+      }, 2000);
       return () => clearInterval(interval);
     }, [productTypes]);
   

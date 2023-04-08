@@ -1,15 +1,47 @@
-import React from "react";
+import React  from "react";
 import { Button, ButtonGroup } from "@material-ui/core";
+// MenuItems.js
 
-const MenuItems = () => {
+import {
+  ALL_PRODUCTS_QUERY,
+  FEATURED_PRODUCTS_QUERY,
+  NEW_ARRIVALS_PRODUCTS_QUERY,
+} from "../../graphql/queries";
+
+
+
+const MenuItems = ({
+  selectedQuery,
+  setSelectedQuery,
+  selectedTitle,
+  setSelectedTitle,
+  onMenuItemClick, // Agrega esta línea
+}) => {
+
+
+  // Aquí puedes manejar la consulta seleccionada y actualizar el estado de tus productos
+  const handleButtonClick = (query, title) => {
+    // Reemplaza las siguientes dos líneas
+    // setSelectedQuery(query);
+    // setSelectedTitle(title);
+    onMenuItemClick(query, title); // Agrega esta línea
+  };
   return (
     <ButtonGroup variant="text" color="inherit">
-      <Button>All Products</Button>
-      <Button>New Arrivals</Button>
-      <Button>Featured</Button>
+   <Button onClick={() => handleButtonClick(ALL_PRODUCTS_QUERY.queryName, "All Products")}>
+  All Products
+</Button>
+<Button
+  onClick={() => handleButtonClick(NEW_ARRIVALS_PRODUCTS_QUERY.queryName, "New Arrivals")}
+>
+  New Arrivals
+</Button>
+<Button onClick={() => handleButtonClick(FEATURED_PRODUCTS_QUERY.queryName, "Featured")}>
+  Featured
+</Button>
+
     </ButtonGroup>
   );
 };
 
 export default MenuItems;
-

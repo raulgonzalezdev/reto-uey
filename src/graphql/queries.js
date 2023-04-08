@@ -8,6 +8,8 @@ export const ALL_PRODUCTS_QUERY = gql`
       name
       image
       price
+      featured
+      newarrivals
       category {
         id
         name
@@ -15,6 +17,7 @@ export const ALL_PRODUCTS_QUERY = gql`
     }
   }
 `;
+ALL_PRODUCTS_QUERY.queryName = "AllProductsQuery";
 
 export const PRODUCT_QUERY = gql`
   query ProductQuery($id: ID!) {
@@ -24,6 +27,8 @@ export const PRODUCT_QUERY = gql`
       vendor
       image
       price
+      featured
+      newarrivals
       category {
         id
         name
@@ -38,6 +43,7 @@ export const PRODUCT_QUERY = gql`
     }
   }
 `;
+PRODUCT_QUERY.queryName = "ProductQuery";
 
 export const ALL_CATEGORIES_QUERY = gql`
   query AllCategoriesQuery {
@@ -48,6 +54,7 @@ export const ALL_CATEGORIES_QUERY = gql`
     }
   }
 `;
+ALL_CATEGORIES_QUERY.queryName ="AllCategoriesQuery";
 
 export const CATEGORY_QUERY = gql`
   query CategoryQuery($id: ID!) {
@@ -65,3 +72,40 @@ export const CATEGORY_QUERY = gql`
     }
   }
 `;
+CATEGORY_QUERY.queryName = "CategoryQuery";
+
+export const FEATURED_PRODUCTS_QUERY = gql`
+  query FeaturedProductsQuery {
+    featuredProducts {
+        id
+        name
+        image
+        price
+        featured
+        newarrivals
+        category {
+          id
+          name
+        }
+    }
+  }
+`;
+FEATURED_PRODUCTS_QUERY.queryName = "FeaturedProductsQuery";
+
+export const NEW_ARRIVALS_PRODUCTS_QUERY = gql`
+  query NewArrivalsProductsQuery {
+    newArrivalsProducts {
+        id
+        name
+        image
+        price
+        featured
+        newarrivals
+        category {
+          id
+          name
+        }
+    }
+  }
+`;
+NEW_ARRIVALS_PRODUCTS_QUERY.queryName = "NewArrivalsProductsQuery";
