@@ -29,15 +29,15 @@ const MenuItems = ({
   return (
     <ButtonGroup variant="text" color="inherit">
    <Button onClick={() => handleButtonClick(ALL_PRODUCTS_QUERY.queryName, "All Products")}>
-  All Products
+  Todos Productos
 </Button>
 <Button
   onClick={() => handleButtonClick(NEW_ARRIVALS_PRODUCTS_QUERY.queryName, "New Arrivals")}
 >
-  New Arrivals
+  Nueva Coleccion
 </Button>
 <Button onClick={() => handleButtonClick(FEATURED_PRODUCTS_QUERY.queryName, "Featured")}>
-  Featured
+  Destacados
 </Button>
 
     </ButtonGroup>

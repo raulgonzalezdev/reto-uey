@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useQuery } from "@apollo/client";
 import { Modal } from "@material-ui/core";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { CssBaseline } from "@material-ui/core";
 
 import "./App.css";
 import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 import ProductTypeCarousel from "./components/ProductTypeCarousel";
 import ProductDetails from "./components/ProductDetails";
 import ProductList from "./components/ProductListCard";
-import { SnackbarProvider, useSnackbar } from "notistack";
-
+import Maintenance from "./components/Maintenance";
+import {  useSnackbar } from "notistack";
 
 // import ShoppingCart from "./components/Header/ShoppingCart";
 import { CartContext } from "./context/CartContext";
@@ -22,10 +25,39 @@ const App = () => {
   const [selectedQuery, setSelectedQuery] = useState(
     ALL_CATEGORIES_QUERY.queryName
   );
+
   const [selectedTitle, setSelectedTitle] = useState("");
   const { cartItems, setCartItems } = useContext(CartContext);
   const { loading, error, data } = useQuery(ALL_CATEGORIES_QUERY);
+  // eslint-disable-next-line 
+  const [showMaintenance, setShowMaintenance] = useState(false);
+
   const { enqueueSnackbar } = useSnackbar();
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleToggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Agrega este estado y función para manejar el cambio de idioma
+  const [language, setLanguage] = useState("es");
+
+  const handleChangeLanguage = (event) => {
+    setLanguage(event.target.value);
+  };
+
+  const theme = createTheme({
+    palette: {
+      type: darkMode ? "dark" : "light",
+    },
+  });
 
   useEffect(() => {
     if (data && data.categories && data.categories.length > 0) {
@@ -39,7 +71,6 @@ const App = () => {
     setSelectedTitle(productType.name);
     setSelectedQuery(ALL_CATEGORIES_QUERY.queryName); // Agrega esta línea
   };
-  
 
   const handleProductSelection = (productId) => {
     setSelectedProductId(productId);
@@ -67,11 +98,10 @@ const App = () => {
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    enqueueSnackbar('Añadido con éxito', { variant: 'success' });
+    enqueueSnackbar("Añadido con éxito", { variant: "success" });
     handleCloseModal();
   };
-  
-  
+
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
@@ -89,12 +119,19 @@ const App = () => {
 
   return (
     <>
+     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Header
         selectedQuery={selectedQuery}
         setSelectedQuery={setSelectedQuery}
         selectedTitle={selectedTitle}
         setSelectedTitle={setSelectedTitle}
         onMenuItemClick={handleMenuItemClick} // Agrega esta línea
+        darkMode={darkMode}
+        onToggleDarkMode={handleToggleDarkMode}
+        language={language}
+        onChangeLanguage={handleChangeLanguage}
+        onSearch={handleSearch}
       />
 
       <ProductTypeCarousel
@@ -106,22 +143,25 @@ const App = () => {
           key={selectedQuery} // Añade esta línea
           productTypeId={selectedProductTypeId}
           onProductClick={handleProductSelection}
-          onAddToCartClick={addToCart}
+          onAddToCartClick={handleAddToCart}
           query={selectedQuery}
           title={selectedTitle}
+          searchQuery={searchQuery}
         />
       )}
       <Modal open={modalOpen} onClose={handleCloseModal}>
-      {selectedProductId && (
-        <ProductDetails
-          productId={selectedProductId}
-          onClose={handleCloseModal}
-          onProductClick={handleProductSelection}
-          onAddToCartClick={handleAddToCart} // Cambia 'addToCart' a 'onAddToCartClick' aquí
-        />
-      )}
-    </Modal>
-      {/* <ShoppingCart  /> */}
+        {selectedProductId && (
+          <ProductDetails
+            productId={selectedProductId}
+            onClose={handleCloseModal}
+            onProductClick={handleProductSelection}
+            onAddToCartClick={handleAddToCart} // Cambia 'addToCart' a 'onAddToCartClick' aquí
+          />
+        )}
+      </Modal>
+      {showMaintenance && <Maintenance />}
+      <Footer appBarColor={theme.palette.primary.main} />
+      </ThemeProvider>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Grid,
@@ -23,65 +23,75 @@ const ProductList = ({
   onAddToCartClick,
   query,
   title,
+  searchQuery,
 }) => {
-    let chosenQuery;
-    let queryVariables = productTypeId ? { id: productTypeId } : {};
-    console.log('Query', query);
-    
-    switch (query) {
-        case ALL_PRODUCTS_QUERY.queryName:
-            console.log('ALL_PRODUCTS_QUERY.queryName', ALL_PRODUCTS_QUERY.queryName)
-          chosenQuery = ALL_PRODUCTS_QUERY;
-          queryVariables = {};
-          break;
-        case NEW_ARRIVALS_PRODUCTS_QUERY.queryName:
-            console.log('NEW_ARRIVALS_PRODUCTS_QUERY.queryName', NEW_ARRIVALS_PRODUCTS_QUERY.queryName)
-          chosenQuery = NEW_ARRIVALS_PRODUCTS_QUERY;
-          queryVariables = {};
-          break;
-        case FEATURED_PRODUCTS_QUERY.queryName:
-            console.log('FEATURED_PRODUCTS_QUERY.queryName', FEATURED_PRODUCTS_QUERY.queryName)
-          chosenQuery = FEATURED_PRODUCTS_QUERY;
-          queryVariables = {};
-          break;
-        default:
-          chosenQuery = CATEGORY_QUERY;
-      }
-      
-    
-    // const { loading, error, data } = useQuery(chosenQuery, {
-    //   variables: queryVariables,
-    // });
+  let chosenQuery;
+  let queryVariables = productTypeId ? { id: productTypeId } : {};
+  console.log("Query", query);
 
-    const { loading, error, data } = useQuery(chosenQuery, {
-        variables: queryVariables,
-      });
+  switch (query) {
+    case ALL_PRODUCTS_QUERY.queryName:
+      console.log("ALL_PRODUCTS_QUERY.queryName", ALL_PRODUCTS_QUERY.queryName);
+      chosenQuery = ALL_PRODUCTS_QUERY;
+      queryVariables = {};
+      break;
+    case NEW_ARRIVALS_PRODUCTS_QUERY.queryName:
+      console.log(
+        "NEW_ARRIVALS_PRODUCTS_QUERY.queryName",
+        NEW_ARRIVALS_PRODUCTS_QUERY.queryName
+      );
+      chosenQuery = NEW_ARRIVALS_PRODUCTS_QUERY;
+      queryVariables = {};
+      break;
+    case FEATURED_PRODUCTS_QUERY.queryName:
+      console.log(
+        "FEATURED_PRODUCTS_QUERY.queryName",
+        FEATURED_PRODUCTS_QUERY.queryName
+      );
+      chosenQuery = FEATURED_PRODUCTS_QUERY;
+      queryVariables = {};
+      break;
+    default:
+      chosenQuery = CATEGORY_QUERY;
+  }
 
-      console.log("Resultados:", loading, error, data)
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const { loading, error, data } = useQuery(chosenQuery, {
+    variables: queryVariables,
+  });
+
+  console.log("Resultados:", loading, error, data);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    let products = [];
+
+    if (data.category) {
+      products = data.category.products;
+    } else if (data.products) {
+      products = data.products;
+    } else if (data.newArrivalsProducts) {
+      products = data.newArrivalsProducts;
+    } else if (data.featuredProducts) {
+      products = data.featuredProducts;
+    }
+
+    if (!searchQuery || searchQuery === "") {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [data, searchQuery]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-
-  let filteredProducts = [];
-
-  if (data.category) {
-    filteredProducts = data.category.products;
-  } else if (data.products) {
-    filteredProducts = data.products;
-  } else if (data.newArrivalsProducts) {
-    filteredProducts = data.newArrivalsProducts;
-  } else if (data.featuredProducts) {
-    filteredProducts = data.featuredProducts;
-  }
-  
-
-    //  console.log('data.products',data.products)
-    //  console.log(' data.category.products', data.category.products)
-//   const filteredProducts = data.category
-//     ? data.category.category
-//     : data.category.category;
-
-  console.log('filtrados',filteredProducts)
 
   return (
     <div style={{ marginLeft: "20px", marginRight: "20px" }}>
@@ -112,7 +122,6 @@ const ProductList = ({
             >
               <CardMedia
                 component="img"
-                height="140"
                 image={product.image}
                 alt={product.name}
                 onClick={() => onProductClick(product.id)}
@@ -120,6 +129,7 @@ const ProductList = ({
                   borderTopLeftRadius: 2,
                   borderTopRightRadius: 2,
                 }}
+                style={{ objectFit: "contain", maxHeight: "250px" }}
               />
               <CardContent>
                 <Typography variant="h5" component="div">
