@@ -25,7 +25,7 @@ const SearchBar = ({ onChange }) => {
     <div className={classes.search}>
       <InputBase
         className={classes.input}
-        placeholder="Search products"
+        placeholder="Busca productos, servicios"
         onChange={onChange}
       />
       <IconButton color="primary"> {/* Cambia el color del icono aquí */}
