@@ -1,231 +1,169 @@
-import React, { useState } from "react";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import { gql, useQuery } from "@apollo/client";
-import GoogleMapReact from "google-map-react";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import React, { useState, useEffect, useContext } from "react";
+import { useQuery } from "@apollo/client";
+import { Modal } from "@material-ui/core";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { CssBaseline } from "@material-ui/core";
+
 import "./App.css";
-import { format } from "date-fns";
-import { es } from 'date-fns/locale';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import ProductTypeCarousel from "./components/ProductTypeCarousel";
+import ProductDetails from "./components/ProductDetails";
+import ProductList from "./components/ProductListCard";
+import Maintenance from "./components/Maintenance";
+import {  useSnackbar } from "notistack";
 
-const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
-});
+// import ShoppingCart from "./components/Header/ShoppingCart";
+import { CartContext } from "./context/CartContext";
 
-const ALL_PRODUCTS_QUERY = gql`
-  query AllProductsQuery {
-    products {
-      id
-      nombre
-      imagen
-    }
-  }
-`;
-
-const PRODUCT_QUERY = gql`
-  query ProductQuery($id: ID!) {
-    product(id: $id) {
-      id
-      nombre
-      vendedor
-      imagen
-      precio
-      tipo
-      ... on RentableProduct {
-        tipoRenta
-        disponibilidad
-      }
-      ... on SpaceProduct {
-        ubicacion {
-          lat
-          lng
-        }
-        disponibilidad
-      }
-      ... on SimpleProduct {
-        inventario
-      }
-    }
-  }
-`;
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return format(date, "dd MMMM, yyyy", { locale: es });
-};
-
-const ProductDetails = ({ productId }) => {
-  const { loading, error, data } = useQuery(PRODUCT_QUERY, {
-    variables: { id: productId },
-  });
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  const product = data.product;
-
-  return (
-    <div className="card">
-      <div className="card-header">
-        <h1>{product.nombre}</h1>
-      </div>
-      <div className="card-body">
-        <p>Vendedor: {product.vendedor}</p>
-        <img
-          className="product-image"
-          src={product.imagen}
-          alt={product.nombre}
-        />
-        <p>Precio: ${product.precio}</p>
-
-        {product.tipo === "simple" && (
-          <>
-            <h3>Inventario</h3>
-            <p>{product.inventario} unidades disponibles</p>
-          </>
-        )}
-
-        {product.tipo === "rentable" && (
-          <>
-            <h3>Tipo de renta</h3>
-            <p>{product.tipoRenta}</p>
-            <h3>Disponibilidad</h3>
-            <ul className="disponibilidad-list">
-              {product.disponibilidad.map((fecha) => (
-                <li key={fecha} className="disponibilidad-list-item">
-                  {formatDate(fecha)}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-
-        {product.tipo === "espacio" && (
-          <>
-            <h3>Ubicación</h3>
-            <div className="map-container">
-              <GoogleMapReact
-                bootstrapURLKeys={{
-                  key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-                }}
-                defaultCenter={product.ubicacion}
-                defaultZoom={15}
-              >
-                <div lat={product.ubicacion.lat} lng={product.ubicacion.lng}>
-                  <img
-                    src="https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png"
-                    alt="Ubicación"
-                  />
-                </div>
-              </GoogleMapReact>
-            </div>
-        
-            <h3>Disponibilidad</h3>
-            <ul className="disponibilidad-list">
-              {product.disponibilidad.map((fecha) => (
-                <li key={fecha} className="disponibilidad-list-item">
-                  {formatDate(fecha)}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ProductList = ({ onProductSelected }) => {
-  const { loading, error, data } = useQuery(ALL_PRODUCTS_QUERY);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return (
-    <CarouselProducts
-      products={data.products}
-      onProductSelected={onProductSelected}
-    />
-  );
-};
-
-// Componente ProductCard
-const ProductCard = ({ product, onClick }) => {
-  return (
-    <div className="product-card" onClick={onClick}>
-      <img
-        src={product.imagen}
-        alt={product.nombre}
-        style={{ width: "20%", height: "auto" }}
-      />
-      <h3>{product.nombre}</h3>
-    </div>
-  );
-};
-
-// Componente CarouselProducts
-const CarouselProducts = ({ products, onProductSelected }) => {
-  const handleCarouselChange = (index) => {
-    onProductSelected(products[index].id);
-  };
-
-  const renderArrowPrev = (onClickHandler, hasPrev, label) => {
-    return (
-     
-        <FaArrowLeft Click={onClickHandler}
-        className="control-arrow control-prev" />
- 
-    );
-  };
-
-  const renderArrowNext = (onClickHandler, hasNext, label) => {
-    return (
-
-        <FaArrowRight onClick={onClickHandler}
-         className="control-arrow control-next"/>
-   
-    );
-  };
-
-  return (
-  
-    <Carousel
-      showThumbs={false}
-      showStatus={false}
-      onChange={handleCarouselChange}
-      showArrows={true}
-      renderArrowPrev={renderArrowPrev}
-      renderArrowNext={renderArrowNext}
-    >
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          onClick={() => onProductSelected(product.id)}
-        />
-      ))}
-    </Carousel>
-
-  );
-};
+import { ALL_CATEGORIES_QUERY } from "./graphql/queries";
 
 const App = () => {
+  const [selectedProductTypeId, setSelectedProductTypeId] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState(
+    ALL_CATEGORIES_QUERY.queryName
+  );
+
+  const [selectedTitle, setSelectedTitle] = useState("");
+  const { cartItems, setCartItems } = useContext(CartContext);
+  const { loading, error, data } = useQuery(ALL_CATEGORIES_QUERY);
+  // eslint-disable-next-line 
+  const [showMaintenance, setShowMaintenance] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleToggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Agrega este estado y función para manejar el cambio de idioma
+  const [language, setLanguage] = useState("es");
+
+  const handleChangeLanguage = (event) => {
+    setLanguage(event.target.value);
+  };
+
+  const theme = createTheme({
+    palette: {
+      type: darkMode ? "dark" : "light",
+    },
+  });
+
+  useEffect(() => {
+    if (data && data.categories && data.categories.length > 0) {
+      setSelectedProductTypeId(data.categories[0].id);
+      setSelectedTitle(data.categories[0].name);
+    }
+  }, [data, setSelectedTitle]);
+
+  const handleProductTypeSelection = (productType) => {
+    setSelectedProductTypeId(productType.id);
+    setSelectedTitle(productType.name);
+    setSelectedQuery(ALL_CATEGORIES_QUERY.queryName); // Agrega esta línea
+  };
 
   const handleProductSelection = (productId) => {
     setSelectedProductId(productId);
+
+    setModalOpen(true);
   };
-  console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedProductId(null);
+  };
+
+  const addToCart = (product) => {
+    setCartItems([...cartItems, { ...product, quantity: 1 }]);
+  };
+  const handleMenuItemClick = (query, title) => {
+    setSelectedProductTypeId(null); // Agrega esta línea
+    setSelectedQuery(query);
+    setSelectedTitle(title);
+    // Reset selectedProductTypeId to the first category when clicking on menu items
+    if (data && data.categories && data.categories.length > 0) {
+      setSelectedProductTypeId(data.categories[0].id);
+    }
+  };
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    enqueueSnackbar("Añadido con éxito", { variant: "success" });
+    handleCloseModal();
+  };
+
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Obtener los items de Local Storage al cargar el componente
+  useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
+    if (storedCartItems) {
+      setCartItems(storedCartItems); // Actualizar el estado cartItems con los datos del Local Storage
+    }
+  }, [setCartItems]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
-    <ApolloProvider client={client}>
-      <ProductList onProductSelected={handleProductSelection} />
-      {selectedProductId && <ProductDetails productId={selectedProductId} />}
-    </ApolloProvider>
+    <>
+     <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Header
+        selectedQuery={selectedQuery}
+        setSelectedQuery={setSelectedQuery}
+        selectedTitle={selectedTitle}
+        setSelectedTitle={setSelectedTitle}
+        onMenuItemClick={handleMenuItemClick} // Agrega esta línea
+        darkMode={darkMode}
+        onToggleDarkMode={handleToggleDarkMode}
+        language={language}
+        onChangeLanguage={handleChangeLanguage}
+        onSearch={handleSearch}
+      />
+
+      <ProductTypeCarousel
+        productTypes={data.categories}
+        onProductTypeSelected={handleProductTypeSelection}
+      />
+      {selectedProductTypeId && (
+        <ProductList
+          key={selectedQuery} // Añade esta línea
+          productTypeId={selectedProductTypeId}
+          onProductClick={handleProductSelection}
+          onAddToCartClick={handleAddToCart}
+          query={selectedQuery}
+          title={selectedTitle}
+          searchQuery={searchQuery}
+        />
+      )}
+      <Modal open={modalOpen} onClose={handleCloseModal}>
+        {selectedProductId && (
+          <ProductDetails
+            productId={selectedProductId}
+            onClose={handleCloseModal}
+            onProductClick={handleProductSelection}
+            onAddToCartClick={handleAddToCart} // Cambia 'addToCart' a 'onAddToCartClick' aquí
+          />
+        )}
+      </Modal>
+      {showMaintenance && <Maintenance />}
+      <Footer appBarColor={theme.palette.primary.main} />
+      </ThemeProvider>
+    </>
   );
 };
-
-
 
 export default App;
