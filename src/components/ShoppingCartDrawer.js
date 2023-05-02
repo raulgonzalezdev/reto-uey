@@ -60,6 +60,7 @@ const ShoppingCartDrawer = () => {
         if (storedCartItems) {
           setCartItems(storedCartItems); // Actualizar el estado cartItems con los datos del Local Storage
         }
+       // eslint-disable-next-line 
       }, []);
 
 
@@ -69,6 +70,7 @@ const ShoppingCartDrawer = () => {
     if (storedCartItems) {
       setCartItems(storedCartItems);
     }
+    // eslint-disable-next-line
   }, []);
 
   // Guardar los items en Local Storage al actualizar el estado

@@ -24,6 +24,7 @@ const Header = ({
   onChangeLanguage,
   onSearch,
 }) => {
+// eslint-disable-next-line
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
